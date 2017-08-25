@@ -153,12 +153,13 @@ public class QueryManager {
 
                 c.setAccessible(true);
 
+                Class<?>[] parameterTypes = c.getParameterTypes();
+                Object constructorParameters[] = new Object[parameterTypes.length];
+
                 try {
                     while (rs.next()) {
-                        Object constructorParameters[] = new Object[c.getParameterTypes().length];
-
-                        for (int i = 0; i < c.getParameterTypes().length; i++)
-                            constructorParameters[i] = readSimpleType(rs, c.getParameterTypes()[i], i + 1);
+                        for (int i = 0; i < parameterTypes.length; i++)
+                            constructorParameters[i] = readSimpleType(rs, parameterTypes[i], i + 1);
 
                         result.add(c.newInstance(constructorParameters));
                     }
