@@ -96,6 +96,22 @@ public class ChalkMine {
         }
     }
 
+    public static <T> T queryScalar(Mapper<T> mapper, String statement, Object... parameters) {
+        try {
+            return getQueryManager().queryScalar(getConnection(), mapper, statement, parameters);
+        } catch (SQLException e) {
+            throw new SQLRuntimeException(e);
+        }
+    }
+
+    public static <T> List<T> queryList(Mapper<T> mapper, String statement, Object... parameters) {
+        try {
+            return getQueryManager().queryList(getConnection(), mapper, statement, parameters);
+        } catch (SQLException e) {
+            throw new SQLRuntimeException(e);
+        }
+    }
+
     public static int update(String statement, Object... parameters) {
         try {
             return getQueryManager().update(getConnection(), statement, parameters);
