@@ -1,4 +1,4 @@
-package chalkmine.cp;
+package com.apelab.chalkmine.cp;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

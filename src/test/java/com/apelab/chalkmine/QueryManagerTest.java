@@ -1,4 +1,4 @@
-package chalkmine;
+package com.apelab.chalkmine;
 
 import org.junit.Assert;
 import org.junit.Test;

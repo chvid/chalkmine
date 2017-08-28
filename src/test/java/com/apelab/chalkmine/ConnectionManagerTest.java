@@ -1,4 +1,4 @@
-package chalkmine;
+package com.apelab.chalkmine;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,25 +1,25 @@
-package chalkmine;
+package com.apelab.chalkmine;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static chalkmine.ChalkMine.*;
+import static com.apelab.chalkmine.ChalkMine.*;
 import static org.junit.Assert.assertEquals;
 
 public class HsqlMultipleConfigurationsTest {
     @Before
     public void setup() {
-        configureViaDriverManager("chalkmine.a", "jdbc:hsqldb:mem:a", "sa", "");
-        configureViaDriverManager("chalkmine.b", "jdbc:hsqldb:mem:b", "sa", "");
-        openConnection("chalkmine.a");
+        configureViaDriverManager("com.apelab.chalkmine.a", "jdbc:hsqldb:mem:a", "sa", "");
+        configureViaDriverManager("com.apelab.chalkmine.b", "jdbc:hsqldb:mem:b", "sa", "");
+        openConnection("com.apelab.chalkmine.a");
         try {
             update("create table a ( t varchar(200) )");
             update("insert into a(t) values(?)", "a");
         } finally {
             closeConnection();
         }
-        openConnection("chalkmine.b");
+        openConnection("com.apelab.chalkmine.b");
         try {
             update("create table a ( t varchar(200) )");
             update("insert into a(t) values(?)", "b");
@@ -30,13 +30,13 @@ public class HsqlMultipleConfigurationsTest {
 
     @After
     public void teardown() {
-        openConnection("chalkmine.a");
+        openConnection("com.apelab.chalkmine.a");
         try {
             update("drop table a");
         } finally {
             closeConnection();
         }
-        openConnection("chalkmine.b");
+        openConnection("com.apelab.chalkmine.b");
         try {
             update("drop table a");
         } finally {
@@ -46,11 +46,11 @@ public class HsqlMultipleConfigurationsTest {
 
     @Test
     public void testA() {
-        assertEquals("a", chalkmine.a.ReadSomethingFromTable.read());
+        assertEquals("a", com.apelab.chalkmine.a.ReadSomethingFromTable.read());
     }
 
     @Test
     public void testB() {
-        assertEquals("b", chalkmine.b.ReadSomethingFromTable.read());
+        assertEquals("b", com.apelab.chalkmine.b.ReadSomethingFromTable.read());
     }
 }

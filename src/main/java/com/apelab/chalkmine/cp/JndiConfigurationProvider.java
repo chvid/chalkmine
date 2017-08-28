@@ -1,6 +1,6 @@
-package chalkmine.cp;
+package com.apelab.chalkmine.cp;
 
-import chalkmine.ConfigurationProvider;
+import com.apelab.chalkmine.ConfigurationProvider;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

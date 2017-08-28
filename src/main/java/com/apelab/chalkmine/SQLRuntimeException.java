@@ -1,4 +1,4 @@
-package chalkmine;
+package com.apelab.chalkmine;
 
 import java.sql.SQLException;
 

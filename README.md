@@ -23,13 +23,13 @@ try {
 }
 ```
 
-The methods openConnection, queryScalar and closeConnection are all static methods in chalkmine.ChalkMine and are here
+The methods openConnection, queryScalar and closeConnection are all static methods in com.apelab.chalkmine.ChalkMine and are here
 imported using a static import.
 
 The methods openConnection and closeConnection open and close a connection.
 The connection is bound to the current thread which is why it is not given as an explicit parameter to queryScalar.
 
-The method queryScalar does a query expecting exactly one row otherwise chalkmine.NonScalarException is thrown.
+The method queryScalar does a query expecting exactly one row otherwise com.apelab.chalkmine.NonScalarException is thrown.
 
 The row is mapped to the type supplied as the first parameter.
 
@@ -106,7 +106,7 @@ ChalkMine reads it configuration from Java's system property mechanism.
 This will configure a default database:
 
 ```
-chalkmine.configurationProvider=system
+com.apelab.chalkmine.configurationProvider=system
 
 default.dbDataSource = com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 default.dbDatabaseName = test

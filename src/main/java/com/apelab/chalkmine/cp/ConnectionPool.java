@@ -1,4 +1,4 @@
-package chalkmine.cp;
+package com.apelab.chalkmine.cp;
 
 import javax.sql.ConnectionEvent;
 import javax.sql.ConnectionEventListener;
@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * The pool will read a configuration similar to this:
  *
  * <pre>
- *     chalkmine.configurationProvider=system
+ *     com.apelab.chalkmine.configurationProvider=system
  *     default.dbDataSource = com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
  *     default.dbPoolSize = 10
  *     default.dbPoolTimeout = 60

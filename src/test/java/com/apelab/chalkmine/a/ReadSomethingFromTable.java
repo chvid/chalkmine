@@ -1,8 +1,8 @@
-package chalkmine.a;
+package com.apelab.chalkmine.a;
 
-import static chalkmine.ChalkMine.closeConnection;
-import static chalkmine.ChalkMine.openConnection;
-import static chalkmine.ChalkMine.queryScalar;
+import static com.apelab.chalkmine.ChalkMine.closeConnection;
+import static com.apelab.chalkmine.ChalkMine.openConnection;
+import static com.apelab.chalkmine.ChalkMine.queryScalar;
 
 public class ReadSomethingFromTable {
     public static String read() {

@@ -1,7 +1,7 @@
-package chalkmine;
+package com.apelab.chalkmine;
 
-import chalkmine.cp.JndiConfigurationProvider;
-import chalkmine.cp.SystemPropertiesConfigurationProvider;
+import com.apelab.chalkmine.cp.JndiConfigurationProvider;
+import com.apelab.chalkmine.cp.SystemPropertiesConfigurationProvider;
 
 import java.sql.Connection;
 import java.sql.SQLException;

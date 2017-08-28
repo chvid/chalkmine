@@ -1,4 +1,4 @@
-package chalkmine;
+package com.apelab.chalkmine;
 
 /**
  * Date: Nov 16, 2008

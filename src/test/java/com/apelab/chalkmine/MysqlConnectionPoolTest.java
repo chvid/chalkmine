@@ -1,4 +1,4 @@
-package chalkmine;
+package com.apelab.chalkmine;
 
 import org.junit.After;
 import org.junit.Before;
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static chalkmine.ChalkMine.*;
+import static com.apelab.chalkmine.ChalkMine.*;
 import static org.junit.Assert.assertEquals;
 
 /**
