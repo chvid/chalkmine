@@ -1,11 +1,13 @@
-# Chalk Mine - Simple Object Relational Mapper for Java
-
+# Chalk Mine - shorthand for embedded SQL in Java
+  
 ## Introduction
 
-Chalkmine is an ORM (Object Relational Mapper) for Java 5 and later. It provides a simple and concise way of mapping
+Chalk Mine is an easy to use shorthand for JDBC-based embedded SQL in Java.
+
+It provides a simple and concise way of mapping
 back and forth between Java types and relational data in an SQL-database.
 
-It is written by Christian Hvid 2007 - 2016.
+It is written by Christian Hvid 2007 - 2017.
 
 ## Examples
 
@@ -67,7 +69,7 @@ List<User> user = queryList(User.class, "select name, country, year_of_birth fro
 ```
 
 The method queryList will do the query expecting any number of rows. The result will be a list of the given type.
-Because it is a not a simple type, ChalkMine will look for a constructor matching the SQL types of columns
+Because it is a not a simple type, Chalk Mine will look for a constructor matching the SQL types of columns
 (here probably varchar, varchar, integer).
 
 ### Modifying data
@@ -80,9 +82,9 @@ update("insert into users(name, country, year_of_birth) values(?, ?, ?)", "Smith
 
 ### Accessing multiple databases within the same application
 
-When you write openConnection() rather than openConnection("some explicit name") ChalkMine will look for a configuration
+When you write openConnection() rather than openConnection("some explicit name") Chalk Mine will look for a configuration
 matching the package name of the calling class. This means that if you call openConnection() from a class inside
-com.apelab.bananas then ChalkMine will look for the first configuration matching the following:
+com.apelab.bananas then Chalk Mine will look for the first configuration matching the following:
 
  - com.apelab.bananas
  - com.apelab
@@ -91,22 +93,22 @@ com.apelab.bananas then ChalkMine will look for the first configuration matching
 
 ### Configuration
 
-ChalkMine has two ways of configuring its datasources; either will get its datasource from JNDI which typically is a
-good way if you use ChalkMine within an application server.
+Chalk Mine has two ways of configuring its datasources; either will get its datasource from JNDI which typically is a
+good way if you use Chalk Mine within an application server.
 
 To setup a database used across the application configure a datasource under the name "java:/comp/env/jdbc/default".
 To setup a database for a specific part of the application put it in under ie.
 ```java:/comp/env/jdbc/com/apelab/bananas```.
 
-Alternatively you configure ChalkMine to use its own datasource by providing ChalkMine a database url, database driver
+Alternatively you configure Chalk Mine to use its own datasource by providing Chalk Mine a database url, database driver
 and so on.
 
-ChalkMine reads it configuration from Java's system property mechanism.
+Chalk Mine reads it configuration from Java's system property mechanism.
 
 This will configure a default database:
 
 ```
-com.apelab.chalkmine.configurationProvider=system
+chalkmine.configurationProvider=system
 
 default.dbDataSource = com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource
 default.dbDatabaseName = test
