@@ -3,6 +3,7 @@ package com.apelab.chalkmine;
 import com.apelab.chalkmine.cp.JndiConfigurationProvider;
 import com.apelab.chalkmine.cp.SystemPropertiesConfigurationProvider;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,10 +17,16 @@ import java.util.List;
 public class ChalkMine {
     private static QueryManager queryManager = null;
     private static ConnectionManager connectionManager = null;
+    private static ChalkMineScriptLoader scriptLoader = new ChalkMineScriptLoader();
 
     private synchronized static QueryManager getQueryManager() {
         if (queryManager == null) queryManager = new QueryManager();
         return queryManager;
+    }
+
+    private synchronized static ChalkMineScriptLoader getScriptLoader() {
+        if (scriptLoader == null) scriptLoader = new ChalkMineScriptLoader();
+        return scriptLoader;
     }
 
     private synchronized static ConnectionManager getConnectionManager() {
@@ -115,6 +122,14 @@ public class ChalkMine {
     public static int update(String statement, Object... parameters) {
         try {
             return getQueryManager().update(getConnection(), statement, parameters);
+        } catch (SQLException e) {
+            throw new SQLRuntimeException(e);
+        }
+    }
+
+    public static void loadScript(InputStream inputStream) {
+        try {
+            getScriptLoader().loadScript(getConnection(), inputStream);
         } catch (SQLException e) {
             throw new SQLRuntimeException(e);
         }
