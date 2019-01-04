@@ -3,9 +3,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>com.apelab.chalkmine</artifactId>
-
+    <groupId>dk.brightworks.chalkmine</groupId>
+    <artifactId>chalkmine</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -29,20 +36,8 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.38</version>
+            <version>8.0.12</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
-
-    <groupId>com.apelab.com.apelab.chalkmine</groupId>
-
-    <version>2.0.0-SNAPSHOT</version>
-
-    <description>Chalk Mine</description>
-
-    <properties>
-        <main.basedir>.</main.basedir>
-        <java.version>1.5</java.version>
-    </properties>
 </project>

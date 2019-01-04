@@ -7,7 +7,7 @@ Chalk Mine is an easy to use shorthand for JDBC-based embedded SQL in Java.
 It provides a simple and concise way of mapping
 back and forth between Java types and relational data in an SQL-database.
 
-It is written by Christian Hvid 2007 - 2017.
+It is written by Christian Hvid 2007-2019.
 
 ## Examples
 
@@ -25,13 +25,13 @@ try {
 }
 ```
 
-The methods openConnection, queryScalar and closeConnection are all static methods in com.apelab.chalkmine.ChalkMine and are here
+The methods openConnection, queryScalar and closeConnection are all static methods in ChalkMine and are here
 imported using a static import.
 
 The methods openConnection and closeConnection open and close a connection.
 The connection is bound to the current thread which is why it is not given as an explicit parameter to queryScalar.
 
-The method queryScalar does a query expecting exactly one row otherwise com.apelab.chalkmine.NonScalarException is thrown.
+The method queryScalar does a query expecting exactly one row otherwise NonScalarException is thrown.
 
 The row is mapped to the type supplied as the first parameter.
 
