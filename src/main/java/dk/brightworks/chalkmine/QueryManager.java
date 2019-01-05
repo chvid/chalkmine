@@ -2,7 +2,9 @@ package dk.brightworks.chalkmine;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QueryManager {
     public <T> T queryScalar(Connection connection, Mapper<T> mapper, String query, Object... parameters) throws SQLException {
@@ -57,6 +59,30 @@ public class QueryManager {
 
             while (rs.next()) {
                 result.add(mapper.map(rs));
+            }
+
+            return result;
+        } finally {
+            ps.close();
+        }
+    }
+
+    public <K, V> Map<K, V> queryMap(Connection connection, Class<K> keyKlass, Class<V> valueKlass, String query, Object ... parameters) throws SQLException {
+        Map<K, V> result = new HashMap<>();
+
+        PreparedStatement ps = connection.prepareStatement(query);
+        try {
+            addParametersToStatement(ps, parameters);
+
+            ResultSet rs = ps.executeQuery();
+
+            Mapper<K> keyMapper = new DefaultMapper<K>(keyKlass, rs.getMetaData(), 0);
+            Mapper<V> valueMapper = new DefaultMapper<V>(valueKlass, rs.getMetaData(), 1);
+
+            while (rs.next()) {
+                K k = keyMapper.map(rs);
+                V v = valueMapper.map(rs);
+                result.put(k, v);
             }
 
             return result;

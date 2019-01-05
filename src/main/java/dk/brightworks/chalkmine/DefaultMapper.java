@@ -4,18 +4,21 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 
-/**
- * Created on 28/08/2017.
- *
- * @author Christian Hvid
- */
+import static dk.brightworks.chalkmine.ChalkMineUtils.isSimpleType;
+
 @SuppressWarnings("unchecked")
 public class DefaultMapper<T> implements Mapper<T> {
     private Class<T> klass;
     private Constructor<T> c;
+    private int offset;
 
     public DefaultMapper(Class<T> klass, ResultSetMetaData rsmd) throws SQLException {
+        this(klass, rsmd, 0);
+    }
+
+    public DefaultMapper(Class<T> klass, ResultSetMetaData rsmd, int offset) throws SQLException {
         this.klass = klass;
+        this.offset = offset;
 
         if (isSimpleType(klass)) {
             c = null;
@@ -30,7 +33,7 @@ public class DefaultMapper<T> implements Mapper<T> {
             Class<?>[] parameterTypes = c.getParameterTypes();
             Object constructorParameters[] = new Object[parameterTypes.length];
             for (int i = 0; i < parameterTypes.length; i++)
-                constructorParameters[i] = readSimpleType(rs, parameterTypes[i], i + 1);
+                constructorParameters[i] = readSimpleType(rs, parameterTypes[i], i + 1 + offset);
 
             try {
                 return c.newInstance(constructorParameters);
@@ -43,15 +46,8 @@ public class DefaultMapper<T> implements Mapper<T> {
             }
 
         } else {
-            return readSimpleType(rs, klass, 1);
+            return readSimpleType(rs, klass, 1 + offset);
         }
-    }
-
-    private boolean isSimpleType(Class klass) {
-        return klass.equals(Long.class) || klass.equals(long.class) || klass.equals(Integer.class) ||
-                klass.equals(Double.class) || klass.equals(String.class) || klass.equals(int.class) ||
-                klass.equals(double.class) || klass.equals(Date.class) || klass.equals(java.util.Date.class) ||
-                klass.equals(Boolean.class) || klass.equals(boolean.class) || klass.isEnum();
     }
 
     private <T> T readSimpleType(ResultSet rs, Class<T> klass, int index) throws SQLException {
@@ -97,9 +93,9 @@ public class DefaultMapper<T> implements Mapper<T> {
 
             boolean matches = true;
 
-            if (types.length == metadata.getColumnCount()) {
-                for (int i = 0; i < metadata.getColumnCount(); i++) {
-                    switch (metadata.getColumnType(i + 1)) {
+            if (types.length == metadata.getColumnCount() - offset) {
+                for (int i = 0; i < metadata.getColumnCount()-offset; i++) {
+                    switch (metadata.getColumnType(i + 1 + offset)) {
                         case Types.BIGINT:
                         case Types.INTEGER:
                         case Types.TINYINT:
@@ -147,7 +143,7 @@ public class DefaultMapper<T> implements Mapper<T> {
 
         String message = klass.getName() + "(";
 
-        for (int i = 1; i <= metadata.getColumnCount(); i++) {
+        for (int i = 1 + offset; i <= metadata.getColumnCount(); i++) {
             message += metadata.getColumnTypeName(i);
             if (i != metadata.getColumnCount()) message += ", ";
         }

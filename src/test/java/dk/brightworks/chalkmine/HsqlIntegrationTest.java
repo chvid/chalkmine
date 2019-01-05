@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static dk.brightworks.chalkmine.ChalkMine.*;
 import static org.junit.Assert.assertEquals;
@@ -80,11 +81,21 @@ public class HsqlIntegrationTest {
     @Test
     public void testQueryList() {
         openConnection();
-
         try {
             List<User> users = queryList(User.class, "select name, country, year_of_birth from users order by name");
             assertEquals("Christian", users.get(0).getName());
             assertEquals("Michelle", users.get(1).getName());
+        } finally {
+            closeConnection();
+        }
+    }
+
+    @Test
+    public void testQueryMap() {
+        openConnection();
+        try {
+            Map<String, Integer> counts = queryMap(String.class, Integer.class, "select country, count(*) from users group by country");
+            assertEquals(1, (int)counts.get("Australia"));
         } finally {
             closeConnection();
         }

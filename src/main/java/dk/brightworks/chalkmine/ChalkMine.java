@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class ChalkMine {
     private static QueryManager queryManager = null;
@@ -92,6 +93,14 @@ public class ChalkMine {
     public static <T> List<T> queryList(Class<T> klass, String statement, Object... parameters) {
         try {
             return getQueryManager().queryList(getConnection(), klass, statement, parameters);
+        } catch (SQLException e) {
+            throw new SQLRuntimeException(e);
+        }
+    }
+
+    public static <K, V> Map<K, V> queryMap(Class<K> keyKlass, Class<V> valueKlass, String statement, Object... parameters) {
+        try {
+            return getQueryManager().queryMap(getConnection(), keyKlass, valueKlass, statement, parameters);
         } catch (SQLException e) {
             throw new SQLRuntimeException(e);
         }
