@@ -1,11 +1,9 @@
 package dk.brightworks.chalkmine;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class QueryManager {
     private static boolean TIME_QUERIES = System.getProperty("chalkmine.timeQueries", "false").equals("true");
@@ -35,7 +33,7 @@ public class QueryManager {
 
         List<T> result = new ArrayList<T>();
 
-        PreparedStatement ps = connection.prepareStatement(query);
+        PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, query);
 
         try {
             addParametersToStatement(ps, parameters);
@@ -51,7 +49,6 @@ public class QueryManager {
             if (TIME_QUERIES) {
                 logger.info("queryList(" + query + ") completed in " + (System.currentTimeMillis() - startTime) + " msec.");
             }
-            ps.close();
         }
     }
 
@@ -60,7 +57,7 @@ public class QueryManager {
 
         List<T> result = new ArrayList<T>();
 
-        PreparedStatement ps = connection.prepareStatement(query);
+        PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, query);
 
         try {
             addParametersToStatement(ps, parameters);
@@ -78,7 +75,6 @@ public class QueryManager {
             if (TIME_QUERIES) {
                 logger.info("queryList(" + query + ") completed in " + (System.currentTimeMillis() - startTime) + " msec.");
             }
-            ps.close();
         }
     }
 
@@ -87,7 +83,7 @@ public class QueryManager {
 
         Map<K, V> result = new HashMap<>();
 
-        PreparedStatement ps = connection.prepareStatement(query);
+        PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, query);
         try {
             addParametersToStatement(ps, parameters);
 
@@ -107,14 +103,13 @@ public class QueryManager {
             if (TIME_QUERIES) {
                 logger.info("queryMap(" + query + ") completed in " + (System.currentTimeMillis() - startTime) + " msec.");
             }
-            ps.close();
         }
     }
 
     public int update(Connection connection, String statement, Object... parameters) throws SQLException {
         long startTime = TIME_QUERIES ? System.currentTimeMillis() : 0;
 
-        PreparedStatement ps = connection.prepareStatement(statement);
+        PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, statement);
 
         try {
             addParametersToStatement(ps, parameters);
@@ -124,7 +119,6 @@ public class QueryManager {
             if (TIME_QUERIES) {
                 logger.info("update(" + statement + ") completed in " + (System.currentTimeMillis() - startTime) + " msec.");
             }
-            ps.close();
         }
     }
 
@@ -142,6 +136,42 @@ public class QueryManager {
                 }
             } else {
                 ps.setObject(i + 1, parameters[i]);
+            }
+        }
+    }
+
+    ThreadLocal<Set<PreparedStatement>> batchStatements = new ThreadLocal<>();
+
+    public void updateBatch(Connection connection, String statement, Object... parameters) throws SQLException {
+        long startTime = TIME_QUERIES ? System.currentTimeMillis() : 0;
+
+        if (batchStatements.get() == null) {
+            batchStatements.set(new HashSet<>());
+        }
+
+        PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, statement);
+
+        try {
+            addParametersToStatement(ps, parameters);
+            ps.addBatch();
+            batchStatements.get().add(ps);
+        } finally {
+            if (TIME_QUERIES) {
+                logger.info("updateBatch(" + statement + ") completed in " + (System.currentTimeMillis() - startTime) + " msec.");
+            }
+        }
+    }
+
+    public void doBatch() throws SQLException {
+        long startTime = TIME_QUERIES ? System.currentTimeMillis() : 0;
+        try {
+            for (PreparedStatement ps : batchStatements.get()) {
+                ps.executeBatch();
+            }
+            batchStatements.remove();
+        } finally {
+            if (TIME_QUERIES) {
+                logger.info("doBatch() completed in " + (System.currentTimeMillis() - startTime) + " msec.");
             }
         }
     }

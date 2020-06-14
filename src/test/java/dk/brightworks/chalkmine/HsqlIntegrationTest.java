@@ -95,7 +95,27 @@ public class HsqlIntegrationTest {
         openConnection();
         try {
             Map<String, Integer> counts = queryMap(String.class, Integer.class, "select country, count(*) from users group by country");
-            assertEquals(1, (int)counts.get("Australia"));
+            assertEquals(1, (int) counts.get("Australia"));
+        } finally {
+            closeConnection();
+        }
+    }
+
+    @Test
+    public void testBatch() {
+        openConnection();
+        try {
+            int count = queryScalar(Integer.class, "select count(*) from users");
+            for (int i = 0; i < 100; i++) {
+                updateBatch("insert into users(name) values(?)", "test-" + i);
+            }
+            doBatch();
+            assertEquals(count + 100, (int) queryScalar(Integer.class, "select count(*) from users"));
+            for (int i = 0; i < 100; i++) {
+                updateBatch("delete from users where name = ?", "test-" + i);
+            }
+            doBatch();
+            assertEquals(count, (int) queryScalar(Integer.class, "select count(*) from users"));
         } finally {
             closeConnection();
         }

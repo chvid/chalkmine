@@ -130,6 +130,22 @@ public class ChalkMine {
         }
     }
 
+    public static void updateBatch(String statement, Object... parameters) {
+        try {
+            getQueryManager().updateBatch(getConnection(), statement, parameters);
+        } catch (SQLException e) {
+            throw new SQLRuntimeException(e);
+        }
+    }
+
+    public static void doBatch() {
+        try {
+            getQueryManager().doBatch();
+        } catch (SQLException e) {
+            throw new SQLRuntimeException(e);
+        }
+    }
+
     public static void loadScript(InputStream inputStream) {
         try {
             getScriptLoader().loadScript(getConnection(), inputStream);

@@ -63,11 +63,14 @@ public class ConnectionManager {
     }
 
     public void closeConnection() throws SQLException {
-        if (connection.get() == null || connection.get().peek() == null)
+        if (connection.get() == null || connection.get().peek() == null) {
             throw new RuntimeException("Connection already closed");
+        }
 
-        connection.get().pop().close();
+        Connection c = this.connection.get().pop();
+        PreparedStatementCache.closePreparedStatements(c);
+        c.close();
 
-        if (connection.get().isEmpty()) connection.remove();
+        if (this.connection.get().isEmpty()) this.connection.remove();
     }
 }
