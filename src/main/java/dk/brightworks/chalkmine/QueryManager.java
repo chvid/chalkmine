@@ -146,13 +146,13 @@ public class QueryManager {
         }
     }
 
-    ThreadLocal<Set<PreparedStatement>> batchStatements = new ThreadLocal<>();
+    ThreadLocal<List<PreparedStatement>> batchStatements = new ThreadLocal<>();
 
     public void updateBatch(Connection connection, String statement, Object... parameters) throws SQLException {
         long startTime = TIME_QUERIES ? System.currentTimeMillis() : 0;
 
         if (batchStatements.get() == null) {
-            batchStatements.set(new HashSet<>());
+            batchStatements.set(new ArrayList<>());
         }
 
         PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, statement);
@@ -160,7 +160,9 @@ public class QueryManager {
         try {
             addParametersToStatement(connection, ps, parameters);
             ps.addBatch();
-            batchStatements.get().add(ps);
+            if (!batchStatements.get().contains(ps)) {
+                batchStatements.get().add(ps);
+            }
         } finally {
             if (TIME_QUERIES) {
                 logger.info("updateBatch(" + statement + ") completed in " + (System.currentTimeMillis() - startTime) + " msec.");
@@ -174,8 +176,8 @@ public class QueryManager {
             for (PreparedStatement ps : batchStatements.get()) {
                 ps.executeBatch();
             }
-            batchStatements.remove();
         } finally {
+            batchStatements.remove();
             if (TIME_QUERIES) {
                 logger.info("doBatch() completed in " + (System.currentTimeMillis() - startTime) + " msec.");
             }
