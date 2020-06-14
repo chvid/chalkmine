@@ -109,12 +109,12 @@ public class HsqlIntegrationTest {
             for (int i = 0; i < 100; i++) {
                 updateBatch("insert into users(name) values(?)", "test-" + i);
             }
-            doBatch();
+            executeBatch();
             assertEquals(count + 100, (int) queryScalar(Integer.class, "select count(*) from users"));
             for (int i = 0; i < 100; i++) {
                 updateBatch("delete from users where name = ?", "test-" + i);
             }
-            doBatch();
+            executeBatch();
             assertEquals(count, (int) queryScalar(Integer.class, "select count(*) from users"));
         } finally {
             closeConnection();

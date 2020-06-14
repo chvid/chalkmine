@@ -138,9 +138,9 @@ public class ChalkMine {
         }
     }
 
-    public static void doBatch() {
+    public static void executeBatch() {
         try {
-            getQueryManager().doBatch();
+            getQueryManager().executeBatch();
         } catch (SQLException e) {
             throw new SQLRuntimeException(e);
         }

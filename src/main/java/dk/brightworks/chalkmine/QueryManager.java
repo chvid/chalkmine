@@ -170,7 +170,7 @@ public class QueryManager {
         }
     }
 
-    public void doBatch() throws SQLException {
+    public void executeBatch() throws SQLException {
         long startTime = TIME_QUERIES ? System.currentTimeMillis() : 0;
         try {
             for (PreparedStatement ps : batchStatements.get()) {
