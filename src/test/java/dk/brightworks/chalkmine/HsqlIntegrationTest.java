@@ -120,4 +120,29 @@ public class HsqlIntegrationTest {
             closeConnection();
         }
     }
+
+    @Test
+    public void testArray() {
+        openConnection();
+        try {
+            assertEquals(1,
+                    (int)queryScalar(
+                            Integer.class,
+                            "select count(*) from users where name in ('Peter', 'Anders', 'Christian', 'Olav')"
+                    )
+            );
+
+            assertEquals(1,
+                    (int)queryScalar(
+                            Integer.class,
+                            "select count(*) from users where name in (unnest(?))",
+                            (Object) new String[] { "Peter", "Anders", "Christian", "Olav"}
+                    )
+            );
+
+        } finally {
+            closeConnection();
+        }
+
+    }
 }

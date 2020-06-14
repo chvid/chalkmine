@@ -36,7 +36,7 @@ public class QueryManager {
         PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, query);
 
         try {
-            addParametersToStatement(ps, parameters);
+            addParametersToStatement(connection, ps, parameters);
 
             ResultSet rs = ps.executeQuery();
 
@@ -60,7 +60,7 @@ public class QueryManager {
         PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, query);
 
         try {
-            addParametersToStatement(ps, parameters);
+            addParametersToStatement(connection, ps, parameters);
 
             ResultSet rs = ps.executeQuery();
 
@@ -85,7 +85,7 @@ public class QueryManager {
 
         PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, query);
         try {
-            addParametersToStatement(ps, parameters);
+            addParametersToStatement(connection, ps, parameters);
 
             ResultSet rs = ps.executeQuery();
 
@@ -112,7 +112,7 @@ public class QueryManager {
         PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, statement);
 
         try {
-            addParametersToStatement(ps, parameters);
+            addParametersToStatement(connection, ps, parameters);
 
             return ps.executeUpdate();
         } finally {
@@ -122,18 +122,24 @@ public class QueryManager {
         }
     }
 
-    private void addParametersToStatement(PreparedStatement ps, Object... parameters) throws SQLException {
+    private String findSqlType(Class klass) {
+        return "VARCHAR";
+    }
+
+    private void addParametersToStatement(Connection connection, PreparedStatement ps, Object... parameters) throws SQLException {
         for (int i = 0; i < parameters.length; i++) {
-            if ((parameters[i] != null) && (parameters[i].getClass().equals(java.util.Date.class))) {
+            if (parameters[i] != null && parameters[i].getClass().equals(java.util.Date.class)) {
                 ps.setTimestamp(i + 1, new Timestamp(((java.util.Date) parameters[i]).getTime()));
-            } else if ((parameters[i] != null) && (parameters[i].getClass().isEnum())) {
+            } else if (parameters[i] != null && parameters[i].getClass().isEnum()) {
                 ps.setString(i + 1, "" + parameters[i]);
-            } else if ((parameters[i] != null) && (parameters[i].getClass().equals(Boolean.class) || parameters[i].getClass().equals(boolean.class))) {
+            } else if (parameters[i] != null && (parameters[i].getClass().equals(Boolean.class) || parameters[i].getClass().equals(boolean.class))) {
                 if ((Boolean) parameters[i]) {
                     ps.setString(i + 1, "t");
                 } else {
                     ps.setString(i + 1, "f");
                 }
+            } else if (parameters[i] != null && parameters[i].getClass().isArray()) {
+                ps.setArray(i + 1, connection.createArrayOf(findSqlType(parameters[i].getClass()), (Object[]) parameters[i]));
             } else {
                 ps.setObject(i + 1, parameters[i]);
             }
@@ -152,7 +158,7 @@ public class QueryManager {
         PreparedStatement ps = PreparedStatementCache.createPreparedStatement(connection, statement);
 
         try {
-            addParametersToStatement(ps, parameters);
+            addParametersToStatement(connection, ps, parameters);
             ps.addBatch();
             batchStatements.get().add(ps);
         } finally {
